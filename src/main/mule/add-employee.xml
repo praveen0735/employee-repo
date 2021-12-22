@@ -28,7 +28,7 @@ output application/json
 ---
 {
    "statuscode" : 200,
-   "message" : "Employee added successfully"
+   "message" : "Employee added successfully to Database"
 }
 ]]></ee:set-payload>
 			</ee:message>
