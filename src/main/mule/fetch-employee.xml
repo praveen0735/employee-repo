@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<ee:object-store-caching-strategy name="Caching_Strategy1" doc:name="Caching Strategy" doc:id="db88dcef-ddf9-450d-89ff-99a91d58d6f7" keyGenerationExpression='#[attributes.queryParams.empid ++ "-" ++ attributes.queryParams.empmobno]' />
+	<flow name="fetch-employeeFlow" doc:id="75c44c61-1216-4d4c-8692-cc475fe717b0" >
+		<http:listener doc:name="Listener" doc:id="54a1ace1-ae6a-4a2d-93dc-b528782876a9" path="fetch-employee" config-ref="HTTP_Listener_config1"/>
+		<logger level="INFO" doc:name="Logger" doc:id="8fcf7a9f-caf0-4005-b4c9-761d3cf7f20a" message="Empid: #[attributes.queryParams.empid] , empmobno: #[attributes.queryParams.empmobno]"/>
+		<db:select doc:name="Select" doc:id="6104a8b7-2291-4664-83e1-718f65ddc2ca" config-ref="Database_Config1">
+			<db:sql><![CDATA[SELECT * from employee ]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="c758458d-4ba4-4c47-9eca-34dc5a78082f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload //filter ($.EMP_NAME as String startsWith  "R"))]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

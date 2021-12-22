@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="add-employeeFlow" doc:id="89aa6dd6-4f20-4efe-b45b-53ac0d28ed46" >
+		<http:listener doc:name="Listener" doc:id="adbe9f80-ed84-4468-8013-ee6f5999cf7d" config-ref="HTTP_Listener_config1" path="add-employee"/>
+		<logger level="INFO" doc:name="Logger" doc:id="287bd10d-ec3a-48b3-85c1-ba0989983780" message="Request Data : #[payload]"/>
+		<db:insert doc:name="Insert" doc:id="c3fe9a90-991a-4a1c-ab93-59cef01231e5" config-ref="Database_Config1">
+			<db:sql ><![CDATA[INSERT INTO employee(emp_id, emp_name, emp_emailid, emp_mobno, emp_address,  emp_status) 
+values(:emp_id, :emp_name, :emp_emailid, :emp_mobno, :emp_address,  :emp_status)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	emp_id : payload.empid,
+	emp_name : payload.firstname ++ " " ++ payload.lastname,
+	emp_emailid : payload.emailid,
+	emp_mobno : payload.mobno,
+	emp_address : payload.hno ++ "," ++ payload.address ++ "," ++ payload.city ++ "," ++ payload.state ++ "-" ++ payload.pincode,
+	emp_status : payload.status
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="06c7f8e2-8a78-4d1b-8396-5144873edc7d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+   "statuscode" : 200,
+   "message" : "Employee added successfully"
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

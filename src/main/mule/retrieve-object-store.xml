@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="82b58b94-78d6-4736-a4ae-a03446901bc5" />
+	<flow name="retrieve-object-storeFlow" doc:id="67535538-a22f-4609-94e9-7b1e0d16fdff" >
+		<http:listener doc:name="Listener" doc:id="20e0233f-2ea8-40f8-b606-954f0712f930" config-ref="HTTP_Listener_config1" path="retrieve-object-store"/>
+		<os:retrieve doc:name="Retrieve" doc:id="7481cddb-43df-442b-85d0-9a8d6e02f37f" key="empId" objectStore="Object_store">
+			<os:default-value ><![CDATA[#[null]]]></os:default-value>
+		</os:retrieve>
+		<ee:transform doc:name="Transform Message" doc:id="5e31b3c7-97b6-4e1b-b225-bf5ebd17d62d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

@@ -1,0 +1,18 @@
+		[{
+		"firstname" : "Praveen",
+		"lastname" : "Mudusu",
+		"address" : "Hyderabad",
+		"emailid": "mulesoft@gmail.com",
+		"empid": "123456",
+		"mobno": "9898989898",
+		"status" : "Active"
+		},
+		{
+		"firstname" : "Praveen",
+		"lastname" : "Mudusu",
+		"address" : "Hyderabad",
+		"emailid": "mulesoft@gmail.com",
+		"empid": "123456",
+		"mobno": "9898989898",
+		"status" : "Active"
+		}]

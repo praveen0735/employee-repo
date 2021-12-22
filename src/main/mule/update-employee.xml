@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="update-employeeFlow" doc:id="2ba5a44c-7d08-45b4-8533-4d343a515662" >
+		<http:listener doc:name="Listener" doc:id="937017b4-8bbd-41a2-9394-d7116348f207" path="update-employee" config-ref="HTTP_Listener_config1"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b4c7bc20-250d-4c8e-a1ab-a62dad33d22d" message="Request Data:  #[payload]"/>
+		<db:update doc:name="Update" doc:id="c1cfa450-6b92-4ccf-9d9a-0e785d5e97ba" config-ref="Database_Config1">
+			<db:sql ><![CDATA[UPDATE employee SET emp_status= :emp_status,emp_mobno=:emp_mobno where emp_id=:emp_id ]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	emp_status : payload.employee.status,
+	emp_id : payload.employee.empid,
+	emp_mobno: payload.employee.empmobno
+}]]]></db:input-parameters>
+		</db:update>
+		<logger level="INFO" doc:name="Logger" doc:id="239831df-dfbe-44f1-a21e-c0ebd038926d" message="Output of Update query #[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="23aad4fe-eaac-40af-a056-66552521c950" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+{
+	response : {
+		statuscode: "200",
+		message : "Employee Details updated Successfully"
+	}
+}
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
